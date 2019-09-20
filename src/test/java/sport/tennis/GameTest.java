@@ -2,11 +2,14 @@ package sport.tennis;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.IntStream;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * @author Kevin Cao
+ */
 public class GameTest {
 
     @Test
@@ -17,6 +20,7 @@ public class GameTest {
         game.pointWonBy(player2);
         game.pointWonBy(player1);
 
+        assertEquals("15 - 15", game.displayScore());
         assertEquals("15 - 15", game.displayScore());
     }
 

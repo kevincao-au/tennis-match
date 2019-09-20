@@ -6,8 +6,11 @@ import sport.ScoringService;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
+/**
+ * @author Kevin Cao
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TennisMatch2Test {
     static ScoringService tennisGame1;
@@ -136,7 +139,8 @@ public class TennisMatch2Test {
     @Test
     @Order(12)
     void testTwo_One() {
-        IntStream.rangeClosed(1, 3).forEach(value -> {
+        assertEquals("1 - 1, Deuce", tennisGame1.displayScore());
+        IntStream.rangeClosed(1, 2).forEach(value -> {
             tennisGame1.pointWonBy(player1);
         });
         assertEquals("2 - 1", tennisGame1.displayScore());
@@ -311,5 +315,13 @@ public class TennisMatch2Test {
         tennisGame1.pointWonBy(player1);
         tennisGame1.pointWonBy(player1);
         assertEquals("6 - 4, Federer wins!", tennisGame1.displayScore());
+    }
+
+    @Test
+    @Order(32)
+    void testSet_is_Finished() {
+        assertThrows(IllegalStateException.class, () -> {
+            tennisGame1.pointWonBy(player1);
+        });
     }
 }

@@ -6,6 +6,9 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Kevin Cao
+ */
 public class PlayerTest {
 
     @Test
