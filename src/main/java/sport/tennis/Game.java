@@ -3,6 +3,7 @@ package sport.tennis;
 import sport.ScoringService;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -15,7 +16,7 @@ public class Game implements ScoringService {
 
     private AtomicReference<GameStatus> gameStatus = new AtomicReference<>(GameStatus.GAME_IN_PROGRESS_NO_DEUCE); // Game Status may be updated atomically
 
-    private Supplier<GameState> currentGameState;
+    private GameStates.ScoreDisplayFunction scoreDisplayFunction;
 
 
     public Game(Player playerA, Player playerB) {
@@ -50,21 +51,21 @@ public class Game implements ScoringService {
                 if (getLeadPlayerByGame().getSetScore() == 6) {
                     // Set Won in Deuce
                     gameStatus.set(GameStatus.SET_WON_IN_DEUCE);
-                    currentGameState = GameStates.WON_A_SET;
+                    scoreDisplayFunction = GameStates.WON_A_SET;
                 } else {
                     resetGameScore();
                     // Game Won in Deuce
                     gameStatus.set(GameStatus.GAME_WON_IN_DEUCE);
-                    currentGameState = GameStates.WON_A_GAME;
+                    scoreDisplayFunction = GameStates.WON_A_GAME;
                 }
             } else if (playerA.getGameScore() == playerB.getGameScore()) {
                 // Game in Deuce
                 gameStatus.set(GameStatus.GAME_IN_DEUCE);
-                currentGameState = GameStates.DEUCE;
+                scoreDisplayFunction = GameStates.DEUCE;
             } else {
                 // Game in Deuce (Advantage)
                 gameStatus.set(GameStatus.GAME_IN_DEUCE_ADVANTAGE);
-                currentGameState = GameStates.DEUCE_ADVANTAGE;
+                scoreDisplayFunction = GameStates.DEUCE_ADVANTAGE;
             }
         } else {
             if (playerA.getGameScore() > 3 || playerB.getGameScore() > 3) {
@@ -73,16 +74,16 @@ public class Game implements ScoringService {
                 if (getLeadPlayerByGame().getSetScore() == 6) {
                     // Set Won No Deuce
                     gameStatus.set(GameStatus.SET_WON_NO_DEUCE);
-                    currentGameState = GameStates.WON_A_SET;
+                    scoreDisplayFunction = GameStates.WON_A_SET;
                 } else {
                     // Game Won No Deuce
                     gameStatus.set(GameStatus.GAME_WON_NO_DEUCE);
-                    currentGameState = GameStates.WON_A_GAME;
+                    scoreDisplayFunction = GameStates.WON_A_GAME;
                 }
             } else {
                 // Game In Progress No Deuce
                 gameStatus.set(GameStatus.GAME_IN_PROGRESS_NO_DEUCE);
-                currentGameState = GameStates.IN_PROGRESS;
+                scoreDisplayFunction = GameStates.IN_PROGRESS;
             }
         }
     }
@@ -91,10 +92,10 @@ public class Game implements ScoringService {
 
     @Override
     public String displayScore() {
-        if (currentGameState.get() == null) {
+        if (scoreDisplayFunction == null) {
             return "No Game Yet!";
         }
-        return currentGameState.get().displayScore(playerA, playerB);
+        return scoreDisplayFunction.apply(playerA, playerB);
     }
 
     @Override

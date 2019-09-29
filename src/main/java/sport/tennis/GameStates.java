@@ -1,6 +1,7 @@
 package sport.tennis;
 
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -8,16 +9,20 @@ import java.util.function.Supplier;
  */
 public class GameStates {
 
-    public static Supplier<GameState> DEUCE = () ->  (player1, player2) -> displaySetScore(player1, player2, true).concat("Deuce");
+//    public static Supplier<GameState> DEUCE = () ->  (player1, player2) -> displaySetScore(player1, player2, true).concat("Deuce");
+//    public static Supplier<GameState> DEUCE_ADVANTAGE = () ->  (player1, player2) -> displaySetScore(player1, player2, true).concat("Advantage ".concat(getLeadPlayerByGame(player1, player2).getName()));
+//    public static Supplier<GameState> IN_PROGRESS = () -> (player1, player2) -> displaySetScore(player1, player2, true).concat(displayGameScore(player1, player2));
+//    public static Supplier<GameState> WON_A_GAME = () -> (player1, player2) -> displaySetScore(player1, player2, false);
+//    public static Supplier<GameState> WON_A_SET = () -> (player1, player2) -> displaySetScore(player1, player2, true).concat(getLeadPlayerByGame(player1, player2).getName()).concat(" wins!");
 
-    public static Supplier<GameState> DEUCE_ADVANTAGE = () ->  (player1, player2) -> displaySetScore(player1, player2, true).concat("Advantage ".concat(getLeadPlayerByGame(player1, player2).getName()));
+    public static interface ScoreDisplayFunction extends BiFunction<Player, Player, String> {
+    }
 
-    public static Supplier<GameState> IN_PROGRESS = () -> (player1, player2) -> displaySetScore(player1, player2, true).concat(displayGameScore(player1, player2));
-
-    public static Supplier<GameState> WON_A_GAME = () -> (player1, player2) -> displaySetScore(player1, player2, false);
-
-    public static Supplier<GameState> WON_A_SET = () -> (player1, player2) -> displaySetScore(player1, player2, true).concat(getLeadPlayerByGame(player1, player2).getName()).concat(" wins!");
-
+    public static ScoreDisplayFunction DEUCE = (player1, player2) -> displaySetScore(player1, player2, true).concat("Deuce");
+    public static ScoreDisplayFunction DEUCE_ADVANTAGE = (player1, player2) -> displaySetScore(player1, player2, true).concat("Advantage ".concat(getLeadPlayerByGame(player1, player2).getName()));
+    public static ScoreDisplayFunction IN_PROGRESS = (player1, player2) -> displaySetScore(player1, player2, true).concat(displayGameScore(player1, player2));
+    public static ScoreDisplayFunction WON_A_GAME = (player1, player2) -> displaySetScore(player1, player2, false);
+    public static ScoreDisplayFunction WON_A_SET = (player1, player2) -> displaySetScore(player1, player2, true).concat(getLeadPlayerByGame(player1, player2).getName()).concat(" wins!");
 
     public static Player getLeadPlayerByGame(Player player1, Player player2) {
         return player1.getGameScore() > player2.getGameScore() ? player1 : player2;
